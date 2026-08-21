@@ -1,38 +1,39 @@
-# 🍕 Food Fiesta - Full-Stack Spring Boot Project
+# 🍕 Food Fiesta - Production-Grade Full-Stack Spring Boot Project
 
-Welcome to **Food Fiesta**, a modern dining management and ordering system. This project is built using the **Spring Boot** framework (Java's most popular backend framework) and is designed to be very easy to run and learn from—even if you are completely new to Java!
+Welcome to **Food Fiesta**, a modern, high-performance dining management and ordering platform. Built on **Spring Boot 3.4.2** and **Java 21**, this application is designed for cloud-native deployment, supporting both quick-start in-memory databases (H2) and production-grade persistent databases (PostgreSQL).
 
----
-
-## 💡 What is this project?
-
-Food Fiesta is a **Full-Stack Application**, which means it has:
-1. **Frontend (The User Interface)**: Built using HTML pages enhanced by **Thymeleaf** (a templating engine that allows Java to insert data into HTML pages) and styled with modern CSS.
-2. **Backend (The Core Logic)**: Powered by **Spring Boot**, which acts as a server to handle user requests, process orders, and manage authentication.
-3. **Database (Data Storage)**: Uses an **H2 In-Memory Database** by default (ideal for beginners as it requires zero database setup and runs inside your computer's memory).
+This guide walks you through local development, architectural concepts, production configuration, and step-by-step cloud deployment (Render & Docker).
 
 ---
 
-## 🛠️ Tech Stack & Key Concepts
+## 🏗️ Architecture & Technology Stack
 
-If you are new to Java or backend development, here are the key pieces used in this project:
+The application adheres to clean **layered architecture** design principles:
 
-- **Java 21**: The programming language used to write the application logic.
-- **Spring Boot 3.4.2**: The framework that handles web routing, server setup, and dependency injection.
-- **Spring Data JPA & Hibernate**: Tools that translate Java code into database tables and queries, meaning you don't need to write raw SQL!
-- **H2 Database**: A lightweight database that starts up instantly inside the app's memory. *Note: Data resets when the application stops.*
-- **Swagger/OpenAPI**: An interactive page that automatically documents and lets you test the web endpoints.
+- **Presentation Layer (Thymeleaf, CSS, JS)**: Server-side HTML rendering utilizing custom visual utility classes, glassmorphic UI elements, and dynamic loops.
+- **Controller Layer (Spring Web)**: RESTful APIs and traditional Web MVC routing controls handling requests, user session binding, and OAuth flows.
+- **Service Layer (Spring Component)**: Business logic, order calculations, and verification handlers.
+- **Data Access Layer (Spring Data JPA / Hibernate)**: Object-Relational Mapping (ORM) translating Java objects directly to database tables.
+- **Security Filter Chain (Spring Security)**: Built-in filters handling OAuth2, CORS policy setup, endpoint authorizations, and resource control.
+
+### Layer Diagram
+```text
+[ Browser ] ──▶ [ Controller / MVC ] ──▶ [ Services ] ──▶ [ JPA Repositories ] ──▶ [ Database ]
+                      │                                          │
+                      ▼                                          ▼
+            [ Thymeleaf Templates ]                      [ H2 / PostgreSQL ]
+```
 
 ---
 
-## 🖥️ Preview of the Application
+## 🖥️ Application Preview
 
-### 🏠 Home Page
+### 🏠 Home Page & Interactive Menu
 <p align="center">
   <img src="./screenshot/home.jpeg" width="800" alt="Home Page">
 </p>
 
-### 🔑 Authentication & Admin Portal
+### 🔑 Auth Dashboards & Administration Panels
 <p align="center">
   <img src="./screenshot/login.png" width="45%" alt="Dual Login System">
   <img src="./screenshot/admin-services.jpeg" width="45%" alt="Admin Dashboard Overview">
@@ -40,79 +41,121 @@ If you are new to Java or backend development, here are the key pieces used in t
 
 ---
 
-## 📋 Prerequisites for Beginners
+## 📋 Prerequisites
 
-Before you start, you only need one tool installed on your computer:
-- **Java Development Kit (JDK) 21**: Download and install it from [Oracle](https://www.oracle.com/java/technologies/downloads/) or [Eclipse Temurin](https://adoptium.net/).
-- *Note: You do NOT need to install Maven. We have included a tool called the "Maven Wrapper" (`mvnw`) which automatically downloads Maven for you when you run the startup command.*
+Before setting up or deploying, verify you have the following installed locally:
+- **Java Development Kit (JDK) 21**
+- *Note: Maven is not required to be installed manually, as the Maven Wrapper (`mvnw` / `mvnw.cmd`) is preloaded in the project.*
 
 ---
 
-## 🚀 Step-by-Step Quick Start
+## ⚙️ Environment Variables Registry
 
-### 1. Clone the Project
-Open your terminal (macOS/Linux) or Command Prompt/PowerShell (Windows) and type:
+In production, avoid hardcoding values. Use this table to configure environment variables for deployment on Render, Docker, or your preferred cloud host:
+
+| Variable Name | Purpose | Example Value / Default |
+| :--- | :--- | :--- |
+| `JAVA_HOME` | Points to Java installation directory | `C:\Program Files\Java\jdk-21` |
+| `PORT` | Web port Spring Boot listens on | `8080` |
+| `SPRING_DATASOURCE_URL` | JDBC database connection string | `jdbc:postgresql://db:5432/foodfiesta` |
+| `SPRING_DATASOURCE_USERNAME` | Database username credentials | `postgres` |
+| `SPRING_DATASOURCE_PASSWORD` | Database password credentials | `your_password` |
+| `GOOGLE_CLIENT_ID` | Google OAuth Web App Client ID | `your_client_id.apps.googleusercontent.com` |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth Web App Client Secret | `GOCSPX-your_secret` |
+
+---
+
+## 🚀 Local Quick-Start (H2 Database)
+
+### 1. Clone & Navigate
 ```bash
 git clone https://github.com/imrajeevnayan/Food-Fiesta.git
 cd Food-Fiesta
 ```
 
-### 2. Run the Application
-Run the command below based on your operating system:
+### 2. Configure Environment `.env`
+Create a file named `.env` in the root directory (this is automatically ignored by Git) to store your local credentials:
+```env
+GOOGLE_CLIENT_ID=your_id_here.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_secret_here
+```
+
+### 3. Run Locally
 
 *   **Windows (PowerShell)**:
     ```powershell
-    .\mvnw.cmd spring-boot:run
+    Get-Content .env | ForEach-Object { $name, $value = $_.Split('=', 2); if ($name -and $value) { [System.Environment]::SetEnvironmentVariable($name.Trim(), $value.Trim()) } }; .\mvnw.cmd spring-boot:run
     ```
-    *(If PowerShell displays an error about `JAVA_HOME` not found, set the environment variable pointing to your JDK folder first, then run it)*:
-    ```powershell
-    $env:JAVA_HOME="C:\Program Files\Java\jdk-21"
-    .\mvnw.cmd spring-boot:run
-    ```
-*   **macOS / Linux (Terminal)**:
+*   **macOS / Linux**:
     ```bash
-    chmod +x mvnw
-    ./mvnw spring-boot:run
+    export $(cat .env | xargs) && ./mvnw spring-boot:run
     ```
 
-### 3. Open in Your Browser
-Once the terminal outputs `Started FoodFrenzyApplication in ... seconds`, open:
-- **Web App**: [http://localhost:8080/](http://localhost:8080/)
-- **Swagger API Docs**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-- **H2 Database Console**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
-  - *Connection Settings:*
-    - **JDBC URL**: `jdbc:h2:mem:foodfiesta`
-    - **User Name**: `sa`
-    - **Password**: *(leave blank)*
+### 4. Port Access
+- **Frontend App**: [http://localhost:8080/](http://localhost:8080/)
+- **Swagger Docs**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+- **H2 DB Console**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console) (JDBC URL: `jdbc:h2:mem:foodfiesta`, User: `sa`, Pass: *blank*)
 
 ---
 
-## 👤 Default Accounts (Pre-Seeded)
+## 🗄️ Database Configurations (H2 vs. PostgreSQL)
 
-The application automatically seeds a default administrator account into the database on startup so you can test admin actions immediately:
-- **Admin Email**: `admin@foodfiesta.com`
-- **Admin Password**: `admin123`
+### Option A: Local Dev / Quick Demo (H2 In-Memory)
+By default, the application runs on H2. It auto-seeds default administrators and catalog entries on startup:
+*   **Admin Email**: `admin@foodfiesta.com`
+*   **Admin Password**: `admin123`
+
+*Note: In-memory data resets every time the application stops or sleeps.*
+
+### Option B: Production Setup (PostgreSQL)
+To run a persistent database locally or in production, configure the environment variables or update `src/main/resources/application.properties` with:
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/foodfiesta
+spring.datasource.username=postgres
+spring.datasource.password=YOUR_PASSWORD
+spring.jpa.hibernate.ddl-auto=update
+```
 
 ---
 
-## 📁 Project Structure Explained
+## ☁️ Deploying on Render (Cloud Deployment)
 
-Here is where to find the important files:
-- `src/main/java/com/example/demo/controllers/`: Java classes that route requests to HTML pages (e.g. `/home` or `/products`).
-- `src/main/java/com/example/demo/entities/`: Java models representing database tables (`User`, `Admin`, `Product`, `Orders`).
-- `src/main/resources/templates/`: The HTML pages rendered by Thymeleaf.
-- `src/main/resources/static/`: Frontend stylesheets (CSS), JavaScript files, and images.
-- `src/main/resources/application.properties`: Configuration settings (database credentials, server ports).
+Render parses the project's `Dockerfile` to compile and containerize the Spring Boot application.
+
+### Setup Guide A: H2 Database (Quick Demo)
+1. Go to your **Render Dashboard**, click **New > Web Service**.
+2. Link your `Food-Fiesta` GitHub repository.
+3. Select **Docker** as the Runtime environment.
+4. Go to **Advanced** settings, add the following environment variables:
+   - **`PORT`**: `8080`
+   - **`GOOGLE_CLIENT_ID`**: `[Your Client ID]`
+   - **`GOOGLE_CLIENT_SECRET`**: `[Your Client Secret]`
+5. Click **Create Web Service**.
+
+### Setup Guide B: PostgreSQL (Production Persistence)
+1. Go to Render, click **New > PostgreSQL** to create a persistent database. Copy the **Internal Database URL**.
+2. Create a new **Web Service**, link your repository, and select **Docker** as the Runtime.
+3. Under **Advanced**, add the environment variables:
+   - **`PORT`**: `8080`
+   - **`GOOGLE_CLIENT_ID`**: `[Your Client ID]`
+   - **`GOOGLE_CLIENT_SECRET`**: `[Your Client Secret]`
+   - **`SPRING_DATASOURCE_URL`**: `jdbc:postgresql://<HOST>:<PORT>/foodfiesta` *(parsed from your Internal Database URL)*
+   - **`SPRING_DATASOURCE_USERNAME`**: `postgres`
+   - **`SPRING_DATASOURCE_PASSWORD`**: `[Your DB Password]`
+4. Click **Create Web Service**.
 
 ---
 
-## 📦 Building the App for Deployment
+## 🐳 Docker Deployment (Local Containerized)
 
-If you want to package the application into a single executable file (`.jar`), run:
-- **Windows**: `.\mvnw.cmd clean package`
-- **macOS/Linux**: `./mvnw clean package`
-
-The compiled output will be generated inside the `target/` directory.
+1. Build the production-ready Docker image:
+   ```bash
+   docker build -t food-fiesta .
+   ```
+2. Run the container locally:
+   ```bash
+   docker run -p 8080:8080 --env-file .env food-fiesta
+   ```
 
 ---
 
