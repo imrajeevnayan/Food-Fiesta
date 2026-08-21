@@ -29,13 +29,13 @@ If you are new to Java or backend development, here are the key pieces used in t
 
 ### 🏠 Home Page
 <p align="center">
-  <img src="./screenshot/home.png" width="800" alt="Home Page">
+  <img src="./screenshot/home.jpeg" width="800" alt="Home Page">
 </p>
 
 ### 🔑 Authentication & Admin Portal
 <p align="center">
   <img src="./screenshot/login.png" width="45%" alt="Dual Login System">
-  <img src="./screenshot/admin-services.png" width="45%" alt="Admin Dashboard Overview">
+  <img src="./screenshot/admin-services.jpeg" width="45%" alt="Admin Dashboard Overview">
 </p>
 
 ---
