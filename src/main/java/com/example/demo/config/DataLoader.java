@@ -45,7 +45,37 @@ public class DataLoader {
                 p5.setPprice(120.0);
                 p5.setPdescription("Warm, soft milk-solid dumplings dipped in fragrant cardamom-infused sugar syrup.");
 
-                productRepository.saveAll(List.of(p1, p2, p3, p4, p5));
+                Product p6 = new Product();
+                p6.setPname("Lucknowi Mutton Biryani");
+                p6.setPprice(420.0);
+                p6.setPdescription("Fragrant Lucknowi rice layered with slow-cooked spiced mutton.");
+
+                Product p7 = new Product();
+                p7.setPname("Butter Chicken");
+                p7.setPprice(340.0);
+                p7.setPdescription("Tender tandoori chicken cooked in a rich, buttery, spiced tomato gravy.");
+
+                Product p8 = new Product();
+                p8.setPname("Chola Bhatura");
+                p8.setPprice(180.0);
+                p8.setPdescription("Spicy chickpea curry served with two fluffy fried leavened flatbreads.");
+
+                Product p9 = new Product();
+                p9.setPname("Veg Hakka Noodles");
+                p9.setPprice(200.0);
+                p9.setPdescription("Wok-tossed noodles with colorful julienned vegetables and authentic Chinese sauces.");
+
+                Product p10 = new Product();
+                p10.setPname("Honey Chilli Potato");
+                p10.setPprice(210.0);
+                p10.setPdescription("Crispy fried potato fingers tossed in a sweet, spicy, and tangy honey sesame glaze.");
+
+                Product p11 = new Product();
+                p11.setPname("Traditional Rice Kheer");
+                p11.setPprice(140.0);
+                p11.setPdescription("Creamy slow-cooked rice pudding sweetened and flavored with saffron, cardamom, and nuts.");
+
+                productRepository.saveAll(List.of(p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11));
                 System.out.println("Sample products data seeded into database.");
             }
 
