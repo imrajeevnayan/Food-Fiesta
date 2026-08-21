@@ -151,3 +151,66 @@
     box-shadow: 0 4px 12px rgba(234, 88, 12, 0.15);
 }
 
+/* Veg/Non-Veg Badge */
+.diet-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    border: 2px solid;
+    padding: 1px;
+    border-radius: 2px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+.diet-badge.veg {
+    border-color: #22c55e;
+}
+.diet-badge.veg::after {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background: #22c55e;
+    border-radius: 50%;
+}
+.diet-badge.non-veg {
+    border-color: #ef4444;
+}
+.diet-badge.non-veg::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 6px solid #ef4444;
+}
+
+/* Bestseller Badge */
+.bestseller-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: #ea580c;
+    color: white;
+    font-size: 0.675rem;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: var(--radius-sm);
+    z-index: 2;
+    box-shadow: var(--shadow-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.delivery-info {
+    font-size: 0.85rem;
+    color: var(--on-surface-variant);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+}
+

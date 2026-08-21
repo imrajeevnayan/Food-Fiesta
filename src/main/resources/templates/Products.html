@@ -39,6 +39,7 @@
                  th:style="'animation-delay: ' + ${iter.index * 0.1} + 's;'">
                 
                 <div class="image-wrapper">
+                    <span th:if="${#strings.containsIgnoreCase(product.pname, 'hyderabadi') || #strings.containsIgnoreCase(product.pname, 'paneer') || #strings.containsIgnoreCase(product.pname, 'tikka')}" class="bestseller-badge">Bestseller</span>
                     <img th:src="${#strings.containsIgnoreCase(product.pname, 'hyderabadi') && #strings.containsIgnoreCase(product.pname, 'biryani') ? '/Images/biryani/Biryani_of_Hyderabadi.jpg' : 
                                   (#strings.containsIgnoreCase(product.pname, 'lucknowi') && #strings.containsIgnoreCase(product.pname, 'biryani') ? '/Images/biryani/Lucknowi-biryani.jpg' :
                                   (#strings.containsIgnoreCase(product.pname, 'paneer') && #strings.containsIgnoreCase(product.pname, 'butter') ? '/Images/paneer/paneer-butter-masala.jpg' :
@@ -53,16 +54,24 @@
                                   (#strings.containsIgnoreCase(product.pname, 'jamun') ? '/Images/north-india-food/Gulab Jamun.jpg' :
                                   (#strings.containsIgnoreCase(product.pname, 'khir') ? '/Images/north-india-food/Khir.jpg' :
                                   (#strings.containsIgnoreCase(product.pname, 'paratha') ? '/Images/north-india-food/Laccha-Paratha.jpg' : '/Images/istockphoto-1006271368-612x612.jpg')))))))))))))}" 
-                         th:alt="${product.pname}">
+                          th:alt="${product.pname}">
                 </div>
                 
                 <div class="card-content">
                     <span class="price-tag" th:text="'₹' + ${#numbers.formatDecimal(product.pprice, 0, 0)}">₹350</span>
-                    <span class="rating">
-                        <i class="fa fa-star"></i> 
-                        <span th:text="${#strings.containsIgnoreCase(product.pname, 'chicken') || #strings.containsIgnoreCase(product.pname, 'butter') ? '4.9 (150+)' : '4.8 (90+)'}">4.8 (80+)</span>
+                    <span class="rating" style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 12px;">
+                        <span>
+                            <i class="fa fa-star"></i> 
+                            <span th:text="${#strings.containsIgnoreCase(product.pname, 'chicken') || #strings.containsIgnoreCase(product.pname, 'butter') ? '4.9 (150+)' : '4.8 (90+)'}">4.8 (80+)</span>
+                        </span>
+                        <span style="font-size: 0.8rem; color: var(--on-surface-variant); font-weight: 600;">
+                            <i class="fa-regular fa-clock"></i> 20-30 mins
+                        </span>
                     </span>
-                    <h3 th:text="${product.pname}">Dish Name</h3>
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <span th:class="${#strings.containsIgnoreCase(product.pname, 'chicken') || #strings.containsIgnoreCase(product.pname, 'mutton') || #strings.containsIgnoreCase(product.pname, 'tikka')} ? 'diet-badge non-veg' : 'diet-badge veg'"></span>
+                        <h3 th:text="${product.pname}" style="margin: 0; font-size: 1.2rem; font-weight: 700;">Dish Name</h3>
+                    </div>
                     <p th:text="${product.pdescription}">Delicious and fresh culinary craft.</p>
                     <div style="display: flex; gap: 12px; margin-top: 16px; width: 100%;">
                         <a th:href="${session.loggedInUser != null} ? @{/dashboard} : '#'" 
