@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.demo.entities.*;
 import com.example.demo.repositories.*;
 
@@ -13,7 +14,9 @@ public class AdminServices
 {
 	@Autowired
 	private AdminRepository adminRepository;
-	
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
 	public List<Admin>getAll()
 	{
@@ -34,6 +37,9 @@ public class AdminServices
 		{
 			if(ad.getAdminId()==id)
 			{
+				if (admin.getAdminPassword() != null && !admin.getAdminPassword().isEmpty()) {
+					admin.setAdminPassword(passwordEncoder.encode(admin.getAdminPassword()));
+				}
 				this.adminRepository.save(admin);
 			}
 		}
@@ -46,13 +52,16 @@ public class AdminServices
 
 	public void addAdmin(Admin admin)
 	{
+		if (admin.getAdminPassword() != null && !admin.getAdminPassword().isEmpty()) {
+			admin.setAdminPassword(passwordEncoder.encode(admin.getAdminPassword()));
+		}
 		this.adminRepository.save(admin);
 	}
 
 	public boolean validateAdminCredentials(String email,String password)
 	{
 		Admin admin=adminRepository.findByAdminEmail(email);
-		if(admin!=null && admin.getAdminPassword().equals(password))
+		if(admin!=null && passwordEncoder.matches(password, admin.getAdminPassword()))
 		{
 			return true;
 		}

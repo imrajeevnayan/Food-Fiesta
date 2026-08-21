@@ -8,13 +8,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import java.util.List;
 
 @Configuration
 public class DataLoader {
 
     @Bean
-    CommandLineRunner initDatabase(ProductRepository productRepository, AdminRepository adminRepository) {
+    CommandLineRunner initDatabase(ProductRepository productRepository, AdminRepository adminRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             if (productRepository.count() == 0) {
                 // ... (existing product seeding)
@@ -51,7 +53,7 @@ public class DataLoader {
                 Admin defaultAdmin = new Admin();
                 defaultAdmin.setAdminName("Super Admin");
                 defaultAdmin.setAdminEmail("admin@foodfiesta.com");
-                defaultAdmin.setAdminPassword("admin123");
+                defaultAdmin.setAdminPassword(passwordEncoder.encode("admin123"));
                 defaultAdmin.setAdminNumber("9876543210");
                 adminRepository.save(defaultAdmin);
                 System.out.println("✅ Default Admin created: admin@foodfiesta.com / admin123");
