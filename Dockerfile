@@ -28,8 +28,4 @@ USER spring:spring
 
 EXPOSE 8080
 
-ENV SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/foodfiesta
-ENV SPRING_DATASOURCE_USERNAME=postgres
-ENV SPRING_DATASOURCE_PASSWORD=password
-
 ENTRYPOINT ["./entrypoint.sh"]
