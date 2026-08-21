@@ -64,8 +64,16 @@
                     </span>
                     <h3 th:text="${product.pname}">Dish Name</h3>
                     <p th:text="${product.pdescription}">Delicious and fresh culinary craft.</p>
-                    <a th:href="${session.loggedInUser != null} ? @{/dashboard} : '#'" 
-                       th:class="${session.loggedInUser != null} ? 'buy-btn' : 'buy-btn buy-action'">Order Now</a>
+                    <div style="display: flex; gap: 12px; margin-top: 16px; width: 100%;">
+                        <a th:href="${session.loggedInUser != null} ? @{/dashboard} : '#'" 
+                           th:class="${session.loggedInUser != null} ? 'buy-btn' : 'buy-btn buy-action'" 
+                           style="flex: 1; text-align: center; margin: 0; display: inline-flex; align-items: center; justify-content: center;">Order Now</a>
+                        <button th:onclick="${session.loggedInUser != null} ? 'addToCart(' + ${product.pid} + ')' : 'showLoginAlert()'" 
+                                class="btn btn-outline" 
+                                style="flex: 1; padding: 10px; font-size: 0.875rem; font-weight: 600; border-radius: var(--radius-md); display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
+                            Add to Cart
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -104,6 +112,23 @@
                 window.location.href = "/login";
             });
         });
+
+        function addToCart(productId) {
+            fetch('/cart/add/' + productId, {
+                method: 'POST'
+            }).then(response => {
+                if (response.ok) {
+                    window.location.href = '/cart';
+                } else {
+                    window.location.href = '/login';
+                }
+            });
+        }
+
+        function showLoginAlert() {
+            alert("Welcome to Food Fiesta! Please Log In as a User to manage your cart.");
+            window.location.href = "/login";
+        }
     </script>
 </body>
 </html>

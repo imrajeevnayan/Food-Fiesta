@@ -16,7 +16,12 @@
             <a href="/products">Menu</a>
             <a href="/location">Location</a>
             <a href="/about">Story</a>
-            <!-- Conditional links for logged-in Users -->
+            <a th:if="${session.loggedInUser}" href="/cart" style="display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
+                <i class="fa-solid fa-cart-shopping" style="color: var(--primary);"></i> Cart
+                <span th:if="${session.cart != null && !session.cart.isEmpty()}" 
+                      th:text="'(' + ${session.cart.size()} + ')'"
+                      style="background: var(--primary); color: white; padding: 2px 6px; border-radius: 99px; font-size: 0.75rem; font-weight: bold; line-height: 1;">(2)</span>
+            </a>
             <a th:if="${session.loggedInUser}" href="/dashboard" class="btn btn-outline">Dashboard</a>
             <!-- Conditional links for logged-in Admins -->
             <a th:if="${session.loggedInAdmin}" href="/admin/services" class="btn btn-outline">Admin Portal</a>

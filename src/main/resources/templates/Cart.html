@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Food Fiesta</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .cart-container {
+            max-width: 1000px;
+            margin: 120px auto 60px;
+            padding: 0 24px;
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 32px;
+        }
+        @media (max-width: 768px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+                margin-top: 100px;
+            }
+        }
+        .cart-items-wrapper {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+        .cart-summary-wrapper {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .item-details {
+            flex: 1;
+        }
+        .item-details h3 {
+            font-size: 1.125rem;
+            margin-bottom: 4px;
+            color: var(--on-surface);
+        }
+        .item-details p {
+            font-size: 0.875rem;
+            color: var(--on-surface-variant);
+        }
+        .item-quantity-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            padding: 6px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-weight: 600;
+        }
+        .remove-btn {
+            color: #dc2626;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+            transition: all 0.2s ease;
+        }
+        .remove-btn:hover {
+            background: #fee2e2;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            color: var(--on-surface-variant);
+        }
+        .summary-total {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+            margin-top: 16px;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--on-surface);
+        }
+        .empty-cart-state {
+            text-align: center;
+            padding: 48px 0;
+        }
+        .empty-cart-state i {
+            font-size: 3rem;
+            color: var(--on-surface-variant);
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Import Navigation Fragment -->
+    <div th:replace="~{Navigation :: navbar}"></div>
+
+    <main class="cart-container">
+        <!-- Cart Items List -->
+        <section class="cart-items-wrapper animate-up">
+            <h2 style="font-size: 1.75rem; margin-bottom: 24px; display: flex; align-items: center; gap: 12px;">
+                <i class="fa-solid fa-cart-shopping" style="color: var(--primary);"></i> Your Cart
+            </h2>
+
+            <!-- Display items if cart is not empty -->
+            <div th:if="${cart != null && !cart.isEmpty()}">
+                <div th:each="item : ${cart}" class="cart-item">
+                    <div class="item-details">
+                        <h3 th:text="${item.product.pname}">Item Name</h3>
+                        <p th:text="'₹' + ${#numbers.formatDecimal(item.product.pprice, 0, 0)}">Price</p>
+                    </div>
+
+                    <!-- Quantity Form -->
+                    <form th:action="@{/cart/update/{id}(id=${item.product.pid})}" method="post" class="item-quantity-form">
+                        <input type="number" name="quantity" th:value="${item.quantity}" min="1" max="20" class="quantity-input" onchange="this.form.submit()">
+                    </form>
+
+                    <!-- Remove Link -->
+                    <a th:href="@{/cart/remove/{id}(id=${item.product.pid})}" class="remove-btn">
+                        <i class="fa-solid fa-trash-can"></i> Remove
+                    </a>
+                </div>
+            </div>
+
+            <!-- Empty Cart State -->
+            <div th:if="${cart == null || cart.isEmpty()}" class="empty-cart-state">
+                <i class="fa-solid fa-basket-shopping"></i>
+                <h3>Your cart is empty</h3>
+                <p style="margin: 8px 0 24px; color: var(--on-surface-variant);">Browse our catalog to add delicious items!</p>
+                <a href="/products" class="btn btn-primary">Go to Menu</a>
+            </div>
+        </section>
+
+        <!-- Cart Summary & Checkout -->
+        <section class="cart-summary-wrapper animate-up" style="animation-delay: 0.1s;">
+            <h3 style="font-size: 1.25rem; margin-bottom: 24px;">Order Summary</h3>
+
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span th:text="'₹' + ${#numbers.formatDecimal(subtotal, 0, 0)}">₹0</span>
+            </div>
+            <div class="summary-row">
+                <span>Delivery Charge</span>
+                <span th:text="'₹' + ${#numbers.formatDecimal(delivery, 0, 0)}">₹0</span>
+            </div>
+            <div class="summary-total summary-row">
+                <span>Total Amount</span>
+                <span th:text="'₹' + ${#numbers.formatDecimal(total, 0, 0)}">₹0</span>
+            </div>
+
+            <form th:action="@{/cart/checkout}" method="post" style="margin-top: 24px;">
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 14px;" th:disabled="${cart == null || cart.isEmpty()}">
+                    Place Order (Checkout)
+                </button>
+            </form>
+            <a href="/products" class="btn btn-outline" style="width: 100%; justify-content: center; margin-top: 12px; padding: 14px;">
+                Continue Shopping
+            </a>
+        </section>
+    </main>
+</body>
+</html>
