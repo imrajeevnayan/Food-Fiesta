@@ -6,87 +6,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard | Food Fiesta</title>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/BuyProduct.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <style>
-        .dashboard-container {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            min-height: 100vh;
-            background: #f8fafc;
-        }
-
-        .sidebar {
-            background: white;
-            padding: 40px 24px;
-            border-right: 1px solid var(--outline);
-            position: sticky;
-            top: 0;
-            height: 100vh;
-        }
-
-        .main-content {
-            padding: 40px;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .search-card {
-            background: white;
-            padding: 32px;
-            border-radius: 24px;
-            box-shadow: var(--shadow-sm);
-            margin-bottom: 32px;
-        }
-
-        .order-table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px;
-        }
-
-        .order-table th {
-            text-align: left;
-            padding: 12px 16px;
-            color: var(--on-surface-variant);
-            font-weight: 600;
-            font-size: 0.875rem;
-        }
-
-        .order-table td {
-            background: white;
-            padding: 16px;
-            border-top: 1px solid var(--outline);
-            border-bottom: 1px solid var(--outline);
-        }
-
-        .order-table td:first-child { border-left: 1px solid var(--outline); border-radius: 12px 0 0 12px; }
-        .order-table td:last-child { border-right: 1px solid var(--outline); border-radius: 0 12px 12px 0; }
-
-        @media (max-width: 1024px) {
-            .dashboard-container { grid-template-columns: 1fr; }
-            .sidebar { display: none; }
-        }
-    </style>
 </head>
 
 <body>
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <a href="/home" class="nav-logo" style="margin-bottom: 48px;">Food Fiesta</a>
-            <nav style="display: flex; flex-direction: column; gap: 8px;">
-                <a href="/home" class="btn btn-outline" style="justify-content: flex-start; border: none; background: transparent;">
+            <a href="/home" class="sidebar-logo">
+                <i class="fa-solid fa-fire-burner"></i> Food Fiesta
+            </a>
+            <nav class="sidebar-nav">
+                <a href="/home" class="sidebar-link">
                     <i class="fa-solid fa-house"></i> Home
                 </a>
-                <a href="#" class="btn btn-primary" style="justify-content: flex-start;">
+                <a href="/products" class="sidebar-link active">
                     <i class="fa-solid fa-cart-shopping"></i> Shop Now
                 </a>
-                <a href="/about" class="btn btn-outline" style="justify-content: flex-start; border: none; background: transparent;">
+                <a href="/about" class="sidebar-link">
                     <i class="fa-solid fa-circle-info"></i> Our Story
                 </a>
-                <div style="margin-top: auto; padding-top: 40px;">
-                    <a href="/logout" class="btn btn-outline" style="width: 100%; color: var(--primary);">
+                <div class="sidebar-footer">
+                    <a href="/logout" class="btn btn-outline" style="width: 100%; color: var(--primary); border-color: var(--primary-light);">
                         <i class="fa-solid fa-right-from-bracket"></i> Sign Out
                     </a>
                 </div>
@@ -95,64 +37,66 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <header style="margin-bottom: 40px; display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1 style="font-size: 2rem;">Welcome Back, <span th:text="${name}" style="color: var(--primary);">User</span>!</h1>
-                    <p style="color: var(--on-surface-variant);">Ready for another delicious meal?</p>
-                </div>
+            <header class="dashboard-header animate-up">
+                <h1>Welcome Back, <span th:text="${name}" style="color: var(--primary);">User</span>!</h1>
+                <p>Ready for another delicious meal?</p>
             </header>
 
             <!-- Search Section -->
-            <div class="search-card animate-up">
+            <div class="search-card animate-up" style="animation-delay: 0.05s;">
                 <form th:action="@{/product/search}" method="post">
-                    <h3 style="margin-bottom: 16px;">Find a Dish</h3>
-                    <div style="display: flex; gap: 12px;">
-                        <input type="text" name="productName" class="input-field" style="margin-top: 0;" placeholder="Search for Biryani, Pasta, Dessert..." required>
+                    <h3>Find a Dish</h3>
+                    <div class="search-group">
+                        <input type="text" name="productName" class="input-field" placeholder="Search for Biryani, Pasta, Dessert..." required>
                         <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Search Menu</button>
                     </div>
-                    <p th:if="${message}" th:text="${message}" style="color: var(--primary); margin-top: 12px; font-size: 0.875rem;"></p>
+                    <p th:if="${message}" th:text="${message}" style="color: var(--primary); margin-top: 12px; font-size: 0.875rem; font-weight: 600;"></p>
                 </form>
             </div>
 
             <!-- Order Placing Section (Result) -->
-            <div th:if="${product!=null}" class="animate-up">
+            <div th:if="${product!=null}" class="animate-up" style="animation-delay: 0.1s;">
                 <h3 style="margin-bottom: 20px;">Search Result</h3>
-                <div class="search-card" style="display: grid; grid-template-columns: 240px 1fr; gap: 40px; border-left: 6px solid var(--primary); padding: 40px;">
-                    <div style="background: var(--primary-container); border-radius: 20px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fa-solid fa-utensils" style="font-size: 4rem; color: var(--primary); opacity: 0.3;"></i>
-                    </div>
-                    
-                    <form th:action="@{/product/order}" th:object="${product}" method="post">
-                        <div style="margin-bottom: 24px;">
-                            <span style="font-size: 0.75rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.1em;">Fresh & Hot</span>
-                            <h2 style="font-size: 1.75rem; margin: 4px 0 16px;" th:text="${product.pname}">Product Name</h2>
-                            <p style="color: var(--on-surface-variant); font-size: 0.875rem;">Experience our signature culinary masterpiece, prepared with secrets from our master chefs.</p>
-                        </div>
-
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px;">
-                            <div>
-                                <label style="font-size: 0.75rem; font-weight: 800; color: var(--on-surface-variant);">PRICE</label>
-                                <div style="font-size: 1.5rem; font-weight: 800; color: var(--on-surface);">₹<span th:text="${product.pprice}">300</span></div>
-                                <input type="hidden" name="oName" th:value="${product.pname}">
-                                <input type="hidden" name="oPrice" th:value="${product.pprice}">
-                            </div>
-                            <div>
-                                <label style="font-size: 0.75rem; font-weight: 800; color: var(--on-surface-variant);">ORDER QUANTITY</label>
-                                <input type="number" name="oQuantity" value="1" min="1" class="input-field" style="margin-top: 4px; padding: 10px 16px;" required>
-                            </div>
+                <div class="product-detail-card">
+                    <div class="product-detail-grid">
+                        <div class="product-image-section">
+                            <i class="fa-solid fa-utensils"></i>
                         </div>
                         
-                        <button type="submit" class="btn btn-primary" style="width: 100%; border-radius: 12px; height: 56px; font-size: 1rem;">
-                            Confirm Order <i class="fa-solid fa-basket-shopping" style="margin-left: 8px;"></i>
-                        </button>
-                    </form>
+                        <div class="product-form-section">
+                            <form th:action="@{/product/order}" th:object="${product}" method="post">
+                                <div style="margin-bottom: 24px;">
+                                    <span class="product-badge">Fresh & Hot</span>
+                                    <h2 class="product-title" th:text="${product.pname}">Product Name</h2>
+                                    <p class="product-desc">Experience our signature culinary masterpiece, prepared with secrets from our master chefs.</p>
+                                </div>
+
+                                <div class="product-meta">
+                                    <div>
+                                        <span class="meta-label">PRICE</span>
+                                        <div class="meta-value-price">₹<span th:text="${#numbers.formatDecimal(product.pprice, 0, 0)}">300</span></div>
+                                        <input type="hidden" name="oName" th:value="${product.pname}">
+                                        <input type="hidden" name="oPrice" th:value="${product.pprice}">
+                                    </div>
+                                    <div>
+                                        <span class="meta-label">ORDER QUANTITY</span>
+                                        <input type="number" name="oQuantity" value="1" min="1" class="input-field" style="margin-top: 4px;" required>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary" style="width: 100%; height: 50px; font-size: 1rem; border-radius: 12px;">
+                                    Confirm Order <i class="fa-solid fa-basket-shopping" style="margin-left: 8px;"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <!-- Order History Section -->
-            <div th:if="${orders!=null}" class="animate-up" style="animation-delay: 0.1s;">
-                <h2 style="margin-bottom: 24px;">Your Recent Activity</h2>
-                <div style="overflow-x: auto;">
+            <div th:if="${orders!=null}" class="animate-up" style="animation-delay: 0.15s;">
+                <h2 class="order-history-title">Your Recent Activity</h2>
+                <div class="table-wrapper">
                     <table class="order-table">
                         <thead>
                             <tr>
@@ -165,11 +109,11 @@
                         </thead>
                         <tbody>
                             <tr th:each="order :${orders}">
-                                <td style="font-weight: 700;" th:text="${order.oName}">Biryani</td>
-                                <td th:text="'₹' + ${order.oPrice}">₹300</td>
+                                <td class="dish-name" th:text="${order.oName}">Biryani</td>
+                                <td th:text="'₹' + ${#numbers.formatDecimal(order.oPrice, 0, 0)}">₹300</td>
                                 <td th:text="${order.oQuantity}">1</td>
-                                <td style="color: var(--primary); font-weight: 700;" th:text="'₹' + ${order.totalAmmout}">₹300</td>
-                                <td style="font-size: 0.75rem; color: var(--on-surface-variant);" th:text="${order.orderDate}">2024-04-09</td>
+                                <td class="total-amount" th:text="'₹' + ${#numbers.formatDecimal(order.totalAmmout, 0, 0)}">₹300</td>
+                                <td class="order-date" th:text="${order.orderDate}">2024-04-09</td>
                             </tr>
                         </tbody>
                     </table>
@@ -178,9 +122,11 @@
         </main>
     </div>
 
-    <footer style="padding: 40px; text-align: center; color: var(--on-surface-variant); font-size: 0.875rem;">
+    <footer style="padding: 40px; text-align: center; color: var(--on-surface-variant); font-size: 0.875rem; border-top: 1px solid var(--outline); background: white;">
         &copy; 2026 Food Fiesta. Enjoy your meal with heart.
     </footer>
 </body>
+
+</html>
 
 </html>

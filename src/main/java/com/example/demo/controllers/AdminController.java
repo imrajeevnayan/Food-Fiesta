@@ -42,6 +42,8 @@ public class AdminController {
 	public String getAllData(@ModelAttribute("adminLogin") AdminLogin login, Model model, jakarta.servlet.http.HttpSession session) {
 		String email = login.getEmail();
 		String password = login.getPassword();
+		System.out.println("DEBUG: Submitted admin login: email=" + email + ", password=" + password);
+		System.out.println("DEBUG: Admins in database: " + adminServices.getAll());
 		if (adminServices.validateAdminCredentials(email, password)) {
 			session.setAttribute("loggedInAdmin", email);
 			return "redirect:/admin/services";

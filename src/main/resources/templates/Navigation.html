@@ -17,13 +17,13 @@
             <a href="/location">Location</a>
             <a href="/about">Story</a>
             <!-- Conditional links for logged-in Users -->
-            <a th:if="${session.loggedInUser}" href="/dashboard" class="btn btn-outline" style="padding: 10px 24px;">Dashboard</a>
+            <a th:if="${session.loggedInUser}" href="/dashboard" class="btn btn-outline">Dashboard</a>
             <!-- Conditional links for logged-in Admins -->
-            <a th:if="${session.loggedInAdmin}" href="/admin/services" class="btn btn-outline" style="padding: 10px 24px;">Admin Portal</a>
+            <a th:if="${session.loggedInAdmin}" href="/admin/services" class="btn btn-outline">Admin Portal</a>
             <!-- Logout if anyone is logged in -->
-            <a th:if="${session.loggedInUser != null || session.loggedInAdmin != null}" href="/logout" class="btn btn-primary" style="padding: 10px 24px; color: white;">Sign Out</a>
+            <a th:if="${session.loggedInUser != null || session.loggedInAdmin != null}" href="/logout" class="btn btn-primary">Sign Out</a>
             <!-- Sign In if no one is logged in -->
-            <a th:if="${session.loggedInUser == null && session.loggedInAdmin == null}" href="/login" class="btn btn-primary" style="padding: 10px 24px; color: white;">Sign In</a>
+            <a th:if="${session.loggedInUser == null && session.loggedInAdmin == null}" href="/login" class="btn btn-primary">Sign In</a>
         </div>
     </nav>
 </body>

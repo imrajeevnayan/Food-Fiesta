@@ -1,29 +1,59 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-	<meta charset="UTF-8" />
-	<title>Document</title>
-	<link rel="stylesheet" href="" th:href="@{/css/Update_Admin.css}" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Admin | Food Fiesta</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
+
 <body>
-		<a href="/services">Back to Services</a>
-	<div class="updateAdmin">
-				<h3 style="color: red;">UPDATE EXISTING ADMIN / PARTNER DETAILS</h3>
-		<form action="" th:action="@{'/updatingAdmin/'+${admin.adminId}}" th:object="${admin}">
-			Admin_Id :
-			<input type="hidden" name="adminId" th:value="${admin.adminId}" th:text="${admin.adminId}"/><br />
-			Admin_Name :
-			<input type="text"  name="adminName"    th:value="${admin.adminName}"/><br />
-			Admin_Number :
-			<input type="tel"  name="adminNumber" th:value="${admin.adminNumber}" pattern="[0-9]{10}"/> <br />
-			Admin_Email :
-			<input type="email" name="adminEmail" th:value="${admin.adminEmail}" /> <br />
-			Admin_Password :
-			<input type="text" name="adminPassword" th:value="${admin.adminPassword}" /> <br />
-			
-			<button type="submit">Update_Admin</button>
-			
-		</form>
-	</div>
+    <div class="auth-wrapper" style="background: var(--surface-variant);">
+        <div class="auth-card animate-up" style="max-width: 500px;">
+            <div style="margin-bottom: 32px; text-align: center;">
+                <div style="width: 56px; height: 56px; background: var(--primary-container); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fa-solid fa-user-shield" style="font-size: 1.5rem; color: var(--primary);"></i>
+                </div>
+                <h2 style="font-size: 1.75rem; margin-bottom: 8px;">Update Admin</h2>
+                <p style="font-size: 0.875rem; color: var(--on-surface-variant);">Modify administrative account details</p>
+            </div>
+
+            <form th:action="@{'/updatingAdmin/'+${admin.adminId}}" th:object="${admin}" method="get">
+                <input type="hidden" name="adminId" th:value="${admin.adminId}" />
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Admin Name</label>
+                    <input type="text" name="adminName" th:value="${admin.adminName}" class="input-field" required>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Email Address</label>
+                    <input type="email" name="adminEmail" th:value="${admin.adminEmail}" class="input-field" required>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Phone Number</label>
+                    <input type="tel" name="adminNumber" th:value="${admin.adminNumber}" class="input-field" pattern="[0-9]{10}" required>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Password</label>
+                    <input type="text" name="adminPassword" th:value="${admin.adminPassword}" class="input-field" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+                    <a href="/admin/services" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update Admin</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer style="padding: 40px; text-align: center; color: var(--on-surface-variant); font-size: 0.875rem;">
+        &copy; 2026 Food Fiesta Secure Admin Gateway.
+    </footer>
 </body>
+
 </html>

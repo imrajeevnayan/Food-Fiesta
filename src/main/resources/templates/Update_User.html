@@ -1,26 +1,56 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-	<meta charset="UTF-8" />
-	<title>Admin : Update</title>
-		<link rel="stylesheet" href="" th:href="@{/css/Update_User.css}" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Customer | Food Fiesta</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
+
 <body>
-	<a href="/services"> Back to Services</a>
-	<div class="updateUser">
-		<h3 style="color: red;"> UPDATE EXISTING USER/CUSTOMER </h3>
-		<form  action=""  th:action="@{'/updatingUser/'+${user.u_id}}"    th:object="${user}">
-			User_Id :
-			<input  type="hidden" name="uid" th:value="${user.u_id}" th:text="${user.u_id}"/><br />
-			User_Name :
-			<input type="text" name="uname" th:value="${user.uname}"/>
-			User_Emai :
-			<input type="email" name="uemail" th:value="${user.uemail}"  />
-			User_Number :
-			<input type="tel" name="unumber" th:value="${user.unumber}" pattern="[0-9]{10}"/>
-			
-		<button type="submit">Update_User</button>
-		</form>
-	</div>
+    <div class="auth-wrapper" style="background: var(--surface-variant);">
+        <div class="auth-card animate-up" style="max-width: 500px;">
+            <div style="margin-bottom: 32px; text-align: center;">
+                <div style="width: 56px; height: 56px; background: var(--primary-container); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fa-solid fa-user-pen" style="font-size: 1.5rem; color: var(--primary);"></i>
+                </div>
+                <h2 style="font-size: 1.75rem; margin-bottom: 8px;">Update Customer</h2>
+                <p style="font-size: 0.875rem; color: var(--on-surface-variant);">Modify customer profile settings</p>
+            </div>
+
+            <form th:action="@{'/updatingUser/'+${user.u_id}}" th:object="${user}" method="get">
+                <input type="hidden" name="uid" th:value="${user.u_id}" />
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Customer Name</label>
+                    <input type="text" name="uname" th:value="${user.uname}" class="input-field" required>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Email Address</label>
+                    <input type="email" name="uemail" th:value="${user.uemail}" class="input-field" required>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Phone Number</label>
+                    <input type="tel" name="unumber" th:value="${user.unumber}" class="input-field" pattern="[0-9]{10}" required>
+                </div>
+
+                <input type="hidden" name="upassword" th:value="${user.upassword}" />
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+                    <a href="/admin/services" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Update Profile</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer style="padding: 40px; text-align: center; color: var(--on-surface-variant); font-size: 0.875rem;">
+        &copy; 2026 Food Fiesta Secure Admin Gateway.
+    </footer>
 </body>
+
 </html>

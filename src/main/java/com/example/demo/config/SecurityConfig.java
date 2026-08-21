@@ -24,7 +24,7 @@ public class SecurityConfig {
                 .requestMatchers("/", "/home", "/login", "/register", "/adminLogin", "/userLogin", "/products", "/location", "/about").permitAll()
                 .requestMatchers("/css/**", "/JavaScript/**", "/Images/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/h2-console/**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
             )
             .oauth2Login(oauth2 -> oauth2
                 .loginPage("/login")

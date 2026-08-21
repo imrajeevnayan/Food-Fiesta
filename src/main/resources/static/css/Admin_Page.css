@@ -130,6 +130,24 @@ body {
     transform: scale(1.1);
 }
 
+.action-btn.edit {
+    color: #3b82f6;
+    background: #eff6ff;
+}
+
+.action-btn.edit:hover {
+    background: #dbeafe;
+}
+
+.action-btn.delete {
+    color: #ef4444;
+    background: #fef2f2;
+}
+
+.action-btn.delete:hover {
+    background: #fee2e2;
+}
+
 .sidebar-link {
     display: flex;
     align-items: center;

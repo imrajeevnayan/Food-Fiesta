@@ -96,8 +96,8 @@
                             <td th:text="${admin.adminNumber}">000</td>
                             <td>
                                 <div style="display: flex; gap: 8px;">
-                                    <a th:href="@{'/updateAdmin/'+${admin.adminId}}" class="action-btn" style="color: #3b82f6; background: #eff6ff;"><i class="fa-solid fa-pen"></i></a>
-                                    <a th:href="@{'/deleteAdmin/'+${admin.adminId}}" class="action-btn" style="color: #ef4444; background: #fef2f2;"><i class="fa-solid fa-trash"></i></a>
+                                    <a th:href="@{'/updateAdmin/'+${admin.adminId}}" class="action-btn edit"><i class="fa-solid fa-pen"></i></a>
+                                    <a th:href="@{'/deleteAdmin/'+${admin.adminId}}" class="action-btn delete"><i class="fa-solid fa-trash"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -131,8 +131,8 @@
                             <td th:text="${user.unumber}">000</td>
                             <td>
                                 <div style="display: flex; gap: 8px;">
-                                    <a th:href="@{'/updateUser/'+${user.u_id}}" class="action-btn" style="color: #3b82f6; background: #eff6ff;"><i class="fa-solid fa-pen"></i></a>
-                                    <a th:href="@{'/deleteUser/'+${user.u_id}}" class="action-btn" style="color: #ef4444; background: #fef2f2;"><i class="fa-solid fa-trash"></i></a>
+                                    <a th:href="@{'/updateUser/'+${user.u_id}}" class="action-btn edit"><i class="fa-solid fa-pen"></i></a>
+                                    <a th:href="@{'/deleteUser/'+${user.u_id}}" class="action-btn delete"><i class="fa-solid fa-trash"></i></a>
                                 </div>
                             </td>
                         </tr>
@@ -164,8 +164,8 @@
                             <td style="color: var(--primary); font-weight: 700;" th:text="'₹' + ${product.pprice}">₹300</td>
                             <td>
                                 <div style="display: flex; gap: 8px;">
-                                    <a th:href="@{'/updateProduct/'+${product.pid}}" class="action-btn" style="color: #3b82f6; background: #eff6ff;"><i class="fa-solid fa-pen"></i></a>
-                                    <a th:href="@{'/deleteProduct/'+${product.pid}}" class="action-btn" style="color: #ef4444; background: #fef2f2;"><i class="fa-solid fa-trash"></i></a>
+                                    <a th:href="@{'/updateProduct/'+${product.pid}}" class="action-btn edit"><i class="fa-solid fa-pen"></i></a>
+                                    <a th:href="@{'/deleteProduct/'+${product.pid}}" class="action-btn delete"><i class="fa-solid fa-trash"></i></a>
                                 </div>
                             </td>
                         </tr>

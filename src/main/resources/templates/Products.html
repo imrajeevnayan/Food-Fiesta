@@ -6,131 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Menu | Food Fiesta</title>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/Products.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <style>
-        .menu-container {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 140px 5% 100px;
-        }
-
-        .menu-header {
-            text-align: center;
-            margin-bottom: 80px;
-        }
-
-        .menu-header h1 {
-            font-size: 3.5rem;
-            margin-bottom: 15px;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 50px;
-        }
-
-        .food-card {
-            background: white;
-            border-radius: 24px;
-            overflow: hidden;
-            position: relative;
-            transition: var(--transition-soft);
-            border: 1px solid var(--outline-variant);
-        }
-
-        .food-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
-        }
-
-        .image-wrapper {
-            width: 100%;
-            height: 280px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .image-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .food-card:hover .image-wrapper img {
-            transform: scale(1.1);
-        }
-
-        .card-content {
-            padding: 25px;
-            position: relative;
-            background: white;
-        }
-
-        .price-tag {
-            background: var(--primary);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-weight: 700;
-            position: absolute;
-            top: -25px;
-            right: 25px;
-            box-shadow: 0 8px 15px rgba(176, 47, 0, 0.2);
-        }
-
-        .rating {
-            color: #ffc107;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .buy-btn {
-            display: block;
-            width: 100%;
-            text-align: center;
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 12px;
-            background: var(--surface-container-low);
-            color: var(--on-surface);
-            text-decoration: none;
-            font-weight: 600;
-            transition: var(--transition-soft);
-        }
-
-        .buy-btn:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        /* Filter Section */
-        .filters {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 50px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 10px 25px;
-            border-radius: 50px;
-            border: 1px solid var(--outline-variant);
-            background: white;
-            cursor: pointer;
-            font-weight: 500;
-            transition: var(--transition-soft);
-        }
-
-        .filter-btn.active, .filter-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-    </style>
 </head>
 
 <body>
@@ -152,170 +29,41 @@
         </div>
 
         <div class="menu-grid">
-            <!-- Item 1 -->
-            <div class="food-card animate-up" data-category="Biryani" style="animation-delay: 0.2s;">
+            <!-- Dynamic loop over database products with smart fallbacks -->
+            <div th:each="product, iter : ${products}" 
+                 class="food-card animate-up" 
+                 th:data-category="${#strings.containsIgnoreCase(product.pname, 'biryani') ? 'Biryani' : 
+                                   (#strings.containsIgnoreCase(product.pname, 'paneer') || #strings.containsIgnoreCase(product.pname, 'chicken') || #strings.containsIgnoreCase(product.pname, 'chola') || #strings.containsIgnoreCase(product.pname, 'bhatura') || #strings.containsIgnoreCase(product.pname, 'paratha') ? 'North Indian' : 
+                                   (#strings.containsIgnoreCase(product.pname, 'manchurian') || #strings.containsIgnoreCase(product.pname, 'noodle') || #strings.containsIgnoreCase(product.pname, 'chowmein') || #strings.containsIgnoreCase(product.pname, 'momo') || #strings.containsIgnoreCase(product.pname, 'potato') ? 'Chinese' : 
+                                   (#strings.containsIgnoreCase(product.pname, 'jamun') || #strings.containsIgnoreCase(product.pname, 'khir') || #strings.containsIgnoreCase(product.pname, 'dessert') ? 'Desserts' : 'North Indian')))}"
+                 th:style="'animation-delay: ' + ${iter.index * 0.1} + 's;'">
+                
                 <div class="image-wrapper">
-                    <img th:src="@{/Images/biryani/Biryani_of_Hyderabadi.jpg}" alt="Chicken Biryani">
+                    <img th:src="${#strings.containsIgnoreCase(product.pname, 'hyderabadi') && #strings.containsIgnoreCase(product.pname, 'biryani') ? '/Images/biryani/Biryani_of_Hyderabadi.jpg' : 
+                                  (#strings.containsIgnoreCase(product.pname, 'lucknowi') && #strings.containsIgnoreCase(product.pname, 'biryani') ? '/Images/biryani/Lucknowi-biryani.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'paneer') && #strings.containsIgnoreCase(product.pname, 'butter') ? '/Images/paneer/paneer-butter-masala.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'kadai') && #strings.containsIgnoreCase(product.pname, 'paneer') ? '/Images/paneer/Kadai-Paneer.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'butter') && #strings.containsIgnoreCase(product.pname, 'chicken') ? '/Images/chicken/butter-chicken.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'tandoori') || #strings.containsIgnoreCase(product.pname, 'tikka') ? '/Images/chicken/Tandoori-chicken-tikka.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'manchurian') ? '/Images/chinese/Fried-rice-manchurian.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'chowmein') || #strings.containsIgnoreCase(product.pname, 'noodle') ? '/Images/chinese/chowmein.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'momo') ? '/Images/chinese/momo.webp' :
+                                  (#strings.containsIgnoreCase(product.pname, 'potato') ? '/Images/north-india-food/Honey-Chilli-Potato.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'chola') ? '/Images/north-india-food/chola-bhatura.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'jamun') ? '/Images/north-india-food/Gulab Jamun.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'khir') ? '/Images/north-india-food/Khir.jpg' :
+                                  (#strings.containsIgnoreCase(product.pname, 'paratha') ? '/Images/north-india-food/Laccha-Paratha.jpg' : '/Images/istockphoto-1006271368-612x612.jpg')))))))))))))}" 
+                         th:alt="${product.pname}">
                 </div>
+                
                 <div class="card-content">
-                    <span class="price-tag">₹410</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.9 (120+)</span>
-                    <h3>Hyderabadi Biryani</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Authentic slow-cooked basmati rice with tender spice-marinated chicken.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 2 -->
-            <div class="food-card animate-up" data-category="North Indian" style="animation-delay: 0.3s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/paneer/paneer-butter-masala.jpg}" alt="Paneer Butter">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹290</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.8 (95+)</span>
-                    <h3>Paneer Butter Masala</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Rich and creamy tomato base with fresh cubes of cottage cheese.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 3 -->
-            <div class="food-card animate-up" data-category="North Indian" style="animation-delay: 0.4s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/chicken/butter-chicken.jpg}" alt="Butter Chicken">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹380</span>
-                    <span class="rating"><i class="fa fa-star"></i> 5.0 (200+)</span>
-                    <h3>Royal Butter Chicken</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Our signature dish. Silky smooth gravy with tandoori chicken chunks.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 4 -->
-            <div class="food-card animate-up" data-category="Chinese" style="animation-delay: 0.5s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/north-india-food/Honey-Chilli-Potato.jpg}" alt="Chilli Potato">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹150</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.5 (80+)</span>
-                    <h3>Honey Chilli Potato</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Crispy potato fries glazed with honey and fiery Schezwan sauce.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 5 -->
-            <div class="food-card animate-up" data-category="North Indian" style="animation-delay: 0.6s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/north-india-food/chola-bhatura.jpg}" alt="Chola Bhatura">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹180</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.7 (150+)</span>
-                    <h3>Classic Chola Bhatura</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Fluffy puffed bread served with spicy chickpea curry and pickles.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 6: Desserts -->
-            <div class="food-card animate-up" data-category="Desserts" style="animation-delay: 0.7s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/north-india-food/Gulab Jamun.jpg}" alt="Gulab Jamun">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹50</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.9 (300+)</span>
-                    <h3>Gulab Jamun (2pcs)</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Warm, syrup-soaked berry-sized balls made with milk solids.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 7: Additional Biryani -->
-            <div class="food-card animate-up" data-category="Biryani" style="animation-delay: 0.8s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/biryani/Lucknowi-biryani.jpg}" alt="Lucknowi Biryani">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹450</span>
-                    <span class="rating"><i class="fa fa-star"></i> 5.0 (80+)</span>
-                    <h3>Saffron Lucknowi Biryani</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Royal Awadhi style biryani with aromatic Lucknowi spices.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 8: Chinese -->
-            <div class="food-card animate-up" data-category="Chinese" style="animation-delay: 0.9s;">
-                <div class="image-wrapper">
-                   <img th:src="@{/Images/chinese/chowmein.jpg}" alt="Veg Chowmein">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹180</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.6 (110+)</span>
-                    <h3>Dragon Hakka Noodles</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Wok-fired noodles tossed with crisp garden veggies and sesame oil.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 9: North Indian -->
-            <div class="food-card animate-up" data-category="North Indian" style="animation-delay: 1.0s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/paneer/Kadai-Paneer.jpg}" alt="Kadai Paneer">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹310</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.8 (140+)</span>
-                    <h3>Spicy Kadai Paneer</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Fresh cottage cheese chunks cooked with bell peppers and ground spices.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 10: Desserts -->
-            <div class="food-card animate-up" data-category="Desserts" style="animation-delay: 1.1s;">
-                <div class="image-wrapper">
-                   <img th:src="@{/Images/north-india-food/Khir.jpg}" alt="Khir">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹120</span>
-                    <span class="rating"><i class="fa fa-star"></i> 5.0 (170+)</span>
-                    <h3>Traditional Rice Khir</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Creamy Indian rice pudding slow-cooked with saffron and cardamom.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 11: Chinese -->
-            <div class="food-card animate-up" data-category="Chinese" style="animation-delay: 1.2s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/chinese/momo.webp}" alt="Momos">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹140</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.7 (250+)</span>
-                    <h3>Steamed Veggie Momos</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Delicate handcrafted dumplings served with fiery red chutney.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
-                </div>
-            </div>
-
-            <!-- Item 12: North Indian -->
-            <div class="food-card animate-up" data-category="North Indian" style="animation-delay: 1.3s;">
-                <div class="image-wrapper">
-                    <img th:src="@{/Images/north-india-food/Laccha-Paratha.jpg}" alt="Laccha Paratha">
-                </div>
-                <div class="card-content">
-                    <span class="price-tag">₹60</span>
-                    <span class="rating"><i class="fa fa-star"></i> 4.9 (40+)</span>
-                    <h3>Laccha Paratha</h3>
-                    <p style="font-size: 0.9rem; color: var(--on-surface-variant); margin-top: 5px;">Multilayered crispy whole wheat bread cooked in pure ghee.</p>
+                    <span class="price-tag" th:text="'₹' + ${#numbers.formatDecimal(product.pprice, 0, 0)}">₹350</span>
+                    <span class="rating">
+                        <i class="fa fa-star"></i> 
+                        <span th:text="${#strings.containsIgnoreCase(product.pname, 'chicken') || #strings.containsIgnoreCase(product.pname, 'butter') ? '4.9 (150+)' : '4.8 (90+)'}">4.8 (80+)</span>
+                    </span>
+                    <h3 th:text="${product.pname}">Dish Name</h3>
+                    <p th:text="${product.pdescription}">Delicious and fresh culinary craft.</p>
                     <a href="#" class="buy-btn buy-action">Order Now</a>
                 </div>
             </div>
@@ -338,7 +86,7 @@
                 // Filter cards
                 foodCards.forEach(card => {
                     if (category === "all" || card.getAttribute("data-category") === category) {
-                        card.style.display = "block";
+                        card.style.display = "flex";
                         card.classList.add("animate-up");
                     } else {
                         card.style.display = "none";
@@ -357,5 +105,4 @@
         });
     </script>
 </body>
-
 </html>

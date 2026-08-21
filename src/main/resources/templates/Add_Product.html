@@ -1,29 +1,52 @@
 <!doctype html>
-<html lang="en" xmlns:th="http://www.thymeleaf.com">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<meta charset="UTF-8" />
-	<title>Document</title>
-	<link rel="stylesheet" href="" th:href="@{/css/Add_Product.css}" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product | Food Fiesta</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 
 <body>
-<a href="/admin/services">Back to Services</a>
-	<div class="addProducts">
-		<h3 style="font-weight: bolder;color: seagreen;">ADD NEW PRODUCT :</h3>
-		<form action="" th:action="@{/addingProduct}" method="post">
-			Product_Name :
-			<input type="text" name="pname" value="" placeholder="Enter Product Name....." /> <br />
-			Product_Price :
-			<input type="text" name="pprice" placeholder="Enter Product Price...." /><br />
-			Product_Desc : <br />
-			<textarea name="pdescription" id="" cols="15" rows="1"
-				placeholder="Enter Product Description.."></textarea><br />
+    <div class="auth-wrapper" style="background: var(--surface-variant);">
+        <div class="auth-card animate-up" style="max-width: 500px;">
+            <div style="margin-bottom: 32px; text-align: center;">
+                <div style="width: 56px; height: 56px; background: var(--primary-container); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fa-solid fa-plus" style="font-size: 1.5rem; color: var(--primary);"></i>
+                </div>
+                <h2 style="font-size: 1.75rem; margin-bottom: 8px;">Add New Product</h2>
+                <p style="font-size: 0.875rem; color: var(--on-surface-variant);">Add a new dish to the restaurant catalog</p>
+            </div>
 
-			<button type="submit">Add_Product</button>
+            <form th:action="@{/addingProduct}" method="post">
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Product Name</label>
+                    <input type="text" name="pname" placeholder="e.g. Hyderabadi Chicken Biryani" class="input-field" required>
+                </div>
 
-		</form>
-	</div>
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Product Price (₹)</label>
+                    <input type="number" step="0.01" name="pprice" placeholder="e.g. 350" class="input-field" required>
+                </div>
+
+                <div style="margin-bottom: 32px;">
+                    <label style="font-size: 0.875rem; font-weight: 700;">Product Description</label>
+                    <textarea name="pdescription" rows="3" placeholder="Enter Product Description..." class="input-field" style="resize: none; border-radius: 14px;" required></textarea>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 12px;">
+                    <a href="/admin/services" class="btn btn-outline">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Add Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer style="padding: 40px; text-align: center; color: var(--on-surface-variant); font-size: 0.875rem;">
+        &copy; 2026 Food Fiesta Secure Admin Gateway.
+    </footer>
 </body>
 
 </html>

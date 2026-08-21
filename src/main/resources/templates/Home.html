@@ -6,30 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food Fiesta | Culinary Excellence</title>
     <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/Home.css}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <style>
-        .hero-section {
-            height: clamp(600px, 90vh, 900px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            background: radial-gradient(circle at 80% 20%, #ffeadb 0%, transparent 40%),
-                        radial-gradient(circle at 20% 80%, #f1f5f9 0%, transparent 40%);
-        }
-        .hero-title {
-            font-size: clamp(3rem, 8vw, 5.5rem);
-            font-weight: 800;
-            margin-bottom: 24px;
-            color: var(--on-surface);
-        }
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--on-surface-variant);
-            max-width: 650px;
-            margin: 0 auto 40px;
-        }
-    </style>
 </head>
 
 <body>
@@ -38,61 +16,63 @@
     <main>
         <section class="hero-section">
             <div class="container animate-up">
-                <span style="letter-spacing: 0.2em; font-weight: 800; color: var(--primary); font-size: 0.75rem; text-transform: uppercase;">Premium Dining Experience</span>
-                <h1 class="hero-title">Taste the <span style="background: linear-gradient(120deg, var(--primary), var(--primary-light)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Fiesta</span> in every single bite.</h1>
+                <span class="hero-tag">Premium Dining Experience</span>
+                <h1 class="hero-title">Taste the <span class="hero-gradient-text">Fiesta</span> in every single bite.</h1>
                 <p class="hero-subtitle">Elevating gourmet cuisine with hand-picked ingredients and world-class culinary craftsmanship.</p>
-                <div style="display: flex; gap: 16px; justify-content: center;">
+                <div class="hero-actions">
                     <a href="/products" class="btn btn-primary">Explore Menu <i class="fa-solid fa-arrow-right"></i></a>
                     <a href="/about" class="btn btn-outline">Our Story</a>
                 </div>
             </div>
         </section>
 
-        <section class="section-padding" style="background: var(--surface-variant);">
+        <section class="features-section">
             <div class="container">
-                <div style="text-align: center; margin-bottom: 64px;">
-                    <h2 style="font-size: 2.5rem; margin-bottom: 16px;">Why Food Fiesta?</h2>
-                    <p style="color: var(--on-surface-variant);">Discover what sets our dining experience apart.</p>
+                <div class="features-header animate-up">
+                    <h2>Why Food Fiesta?</h2>
+                    <p>Discover what sets our dining experience apart.</p>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px;">
-                    <div class="card-glass">
-                        <div style="width: 56px; height: 56px; background: var(--primary-container); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
-                            <i class="fa-solid fa-bolt" style="font-size: 1.5rem; color: var(--primary);"></i>
+                <div class="features-grid">
+                    <div class="feature-card animate-up">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-bolt"></i>
                         </div>
-                        <h3 style="margin-bottom: 12px;">Fast Delivery</h3>
-                        <p style="color: var(--on-surface-variant);">Piping hot meals delivered to your doorstep in 30 minutes or less.</p>
+                        <h3>Fast Delivery</h3>
+                        <p>Piping hot meals delivered to your doorstep in 30 minutes or less.</p>
                     </div>
-                    <div class="card-glass" style="transition-delay: 0.1s;">
-                        <div style="width: 56px; height: 56px; background: var(--primary-container); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
-                            <i class="fa-solid fa-leaf" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <div class="feature-card animate-up" style="animation-delay: 0.1s;">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-leaf"></i>
                         </div>
-                        <h3 style="margin-bottom: 12px;">Farm Fresh</h3>
-                        <p style="color: var(--on-surface-variant);">100% organic ingredients sourced directly from local sustainable farms.</p>
+                        <h3>Farm Fresh</h3>
+                        <p>100% organic ingredients sourced directly from local sustainable farms.</p>
                     </div>
-                    <div class="card-glass" style="transition-delay: 0.2s;">
-                        <div style="width: 56px; height: 56px; background: var(--primary-container); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin-bottom: 24px;">
-                            <i class="fa-solid fa-hat-chef" style="font-size: 1.5rem; color: var(--primary);"></i>
+                    <div class="feature-card animate-up" style="animation-delay: 0.2s;">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-utensils"></i>
                         </div>
-                        <h3 style="margin-bottom: 12px;">Expert Chefs</h3>
-                        <p style="color: var(--on-surface-variant);">Master chefs dedicated to creating culinary masterpieces for your palate.</p>
+                        <h3>Expert Chefs</h3>
+                        <p>Master chefs dedicated to creating culinary masterpieces for your palate.</p>
                     </div>
                 </div>
             </div>
         </section>
     </main>
 
-    <footer style="padding: 80px 5%; border-top: 1px solid var(--outline); background: white;">
-        <div class="container" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-            <a href="/" class="nav-logo" style="font-size: 2rem; margin-bottom: 24px;">Food Fiesta</a>
-            <p style="color: var(--on-surface-variant); max-width: 400px; margin-bottom: 32px;">Setting the gold standard in premium dining and doorstep delivery.</p>
-            <div style="display: flex; gap: 24px; margin-bottom: 48px;">
-                <a href="#" style="color: var(--on-surface); font-size: 1.25rem;"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" style="color: var(--on-surface); font-size: 1.25rem;"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#" style="color: var(--on-surface); font-size: 1.25rem;"><i class="fa-brands fa-facebook"></i></a>
+    <footer class="footer-main">
+        <div class="container footer-content">
+            <a href="/" class="nav-logo footer-logo">Food Fiesta</a>
+            <p class="footer-desc">Setting the gold standard in premium dining and doorstep delivery.</p>
+            <div class="footer-socials">
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+                <a href="#"><i class="fa-brands fa-facebook"></i></a>
             </div>
-            <p style="font-size: 0.875rem; color: var(--on-surface-variant); opacity: 0.7;">&copy; 2026 Food Fiesta. All rights reserved.</p>
+            <p class="footer-copy">&copy; 2026 Food Fiesta. All rights reserved.</p>
         </div>
     </footer>
 </body>
+
+</html>
 
 </html>
