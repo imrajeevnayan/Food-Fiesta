@@ -28,15 +28,36 @@ The application adheres to clean **layered architecture** design principles:
 
 ## 🖥️ Application Preview
 
-### 🏠 Home Page & Interactive Menu
+### 🏠 Home Page
 <p align="center">
   <img src="./screenshot/home.jpeg" width="800" alt="Home Page">
 </p>
 
-### 🔑 Auth Dashboards & Administration Panels
+### 🍛 Interactive Menu Grid
 <p align="center">
-  <img src="./screenshot/login.png" width="45%" alt="Dual Login System">
-  <img src="./screenshot/admin-services.jpeg" width="45%" alt="Admin Dashboard Overview">
+  <img src="./screenshot/products.png" width="800" alt="Menu Page">
+</p>
+
+### 📖 Story & About Page
+<p align="center">
+  <img src="./screenshot/about.png" width="800" alt="Story Page">
+</p>
+
+### 🔑 Authentication Systems
+<p align="center">
+  <img src="./screenshot/login.png" width="45%" alt="Sign In page">
+  <img src="./screenshot/register.png" width="45%" alt="Register page">
+</p>
+
+### 👤 Customer & Admin Dashboards
+<p align="center">
+  <img src="./screenshot/userLogin.png" width="45%" alt="Customer Dashboard">
+  <img src="./screenshot/admin-services.jpeg" width="45%" alt="Admin Control Console">
+</p>
+
+### 🛠️ Swagger API Documentation
+<p align="center">
+  <img src="./screenshot/swagger-ui-index-html.png" width="800" alt="Swagger API documentation UI">
 </p>
 
 ---
