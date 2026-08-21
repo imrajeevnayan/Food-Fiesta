@@ -64,7 +64,8 @@
                     </span>
                     <h3 th:text="${product.pname}">Dish Name</h3>
                     <p th:text="${product.pdescription}">Delicious and fresh culinary craft.</p>
-                    <a href="#" class="buy-btn buy-action">Order Now</a>
+                    <a th:href="${session.loggedInUser != null} ? @{/dashboard} : '#'" 
+                       th:class="${session.loggedInUser != null} ? 'buy-btn' : 'buy-btn buy-action'">Order Now</a>
                 </div>
             </div>
         </div>
