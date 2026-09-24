@@ -1,188 +1,131 @@
-# 🍕 Food Fiesta - Production-Grade Full-Stack Spring Boot Project
+# Food Fiesta
 
-🌐 **Live Application**: [Food Fiesta | Culinary Excellence](https://food-fiesta-0sej.onrender.com/)
+**Live application:** [Food Fiesta | Culinary Excellence](https://food-fiesta-0sej.onrender.com/)
 
-Welcome to **Food Fiesta**, a modern, high-performance dining management and ordering platform. Built on **Spring Boot 3.4.2** and **Java 21**, this application is designed for cloud-native deployment, supporting both quick-start in-memory databases (H2) and production-grade persistent databases (PostgreSQL).
+Food Fiesta is a Spring Boot 3.4.2 and Java 21 food-ordering platform with a geospatial and real-time delivery foundation. It uses PostgreSQL/PostGIS for durable spatial data, Redis Geo for live driver positions, STOMP WebSockets for tracking updates, Kafka for asynchronous driver routing, and Spring AI for delivery-time estimates.
 
-This guide walks you through local development, architectural concepts, production configuration, and step-by-step cloud deployment (Render & Docker).
+## Architecture
 
----
-
-## 🏗️ Architecture & Technology Stack
-
-The application adheres to clean **layered architecture** design principles:
-
-- **Presentation Layer (Thymeleaf, CSS, JS)**: Server-side HTML rendering utilizing custom visual utility classes, glassmorphic UI elements, and dynamic loops.
-- **Controller Layer (Spring Web)**: RESTful APIs and traditional Web MVC routing controls handling requests, user session binding, and OAuth flows.
-- **Service Layer (Spring Component)**: Business logic, order calculations, and verification handlers.
-- **Data Access Layer (Spring Data JPA / Hibernate)**: Object-Relational Mapping (ORM) translating Java objects directly to database tables.
-- **Security Filter Chain (Spring Security)**: Built-in filters handling OAuth2, CORS policy setup, endpoint authorizations, and resource control.
-
-### Layer Diagram
 ```text
-[ Browser ] ──▶ [ Controller / MVC ] ──▶ [ Services ] ──▶ [ JPA Repositories ] ──▶ [ Database ]
-                      │                                          │
-                      ▼                                          ▼
-            [ Thymeleaf Templates ]                      [ H2 / PostgreSQL ]
+Browser / Mobile Client
+        |
+Spring MVC + REST + STOMP WebSocket
+        |
+Services: ordering, routing, tracking, ETA
+   |          |            |         |
+PostGIS     Kafka       Redis Geo  Spring AI
 ```
 
----
+- **PostgreSQL + PostGIS:** restaurant, driver, and delivery geometry with GiST spatial indexes.
+- **Flyway:** versioned schema ownership; Hibernate validates mappings only.
+- **Redis Geo:** high-frequency driver-location updates and nearest-driver lookups.
+- **STOMP WebSockets:** publishes driver updates to `/topic/drivers/{driverId}` and order status updates to `/topic/orders/{orderId}`.
+- **Kafka:** checkout publishes `new-order-created`; a consumer reserves the nearest available driver.
+- **Spring AI:** combines PostGIS delivery distance, restaurant prep time, and mocked traffic to calculate an ETA. It uses an OpenAI model when `OPENAI_API_KEY` is configured and otherwise returns the deterministic estimate.
+- **Java 21 virtual threads:** enabled for high-fan-out HTTP and WebSocket handling.
 
-## 🖥️ Application Preview
+## Application preview
 
-### 🏠 Home Page
+### Home
 <p align="center">
-  <img src="./screenshot/home.jpeg" width="800" alt="Home Page">
+  <img src="./screenshot/home.jpeg" width="800" alt="Food Fiesta home page">
 </p>
 
-### 🍛 Interactive Menu Grid
+### Menu
 <p align="center">
-  <img src="./screenshot/products.png" width="800" alt="Menu Page">
+  <img src="./screenshot/products.jpeg" width="800" alt="Food Fiesta menu">
 </p>
 
-### 📖 Story & About Page
+### Cart
 <p align="center">
-  <img src="./screenshot/about.png" width="800" alt="Story Page">
+  <img src="./screenshot/cart.jpeg" width="800" alt="Food Fiesta cart">
 </p>
 
-### 🔑 Authentication Systems
+### Customer dashboard
 <p align="center">
-  <img src="./screenshot/login.png" width="45%" alt="Sign In page">
-  <img src="./screenshot/register.png" width="45%" alt="Register page">
+  <img src="./screenshot/user-dashboard.jpeg" width="800" alt="Food Fiesta customer dashboard">
 </p>
 
-### 👤 Customer & Admin Dashboards
+### API documentation
 <p align="center">
-  <img src="./screenshot/userLogin.png" width="45%" alt="Customer Dashboard">
-  <img src="./screenshot/admin-services.jpeg" width="45%" alt="Admin Control Console">
+  <img src="./screenshot/swagger-ui-index-html.png" width="800" alt="Swagger UI">
 </p>
 
-### 🛠️ Swagger API Documentation
-<p align="center">
-  <img src="./screenshot/swagger-ui-index-html.png" width="800" alt="Swagger API documentation UI">
-</p>
+## Prerequisites
 
----
+- JDK 21
+- Docker Desktop with Docker Compose
+- An OpenAI API key only when AI-backed ETA refinement is required
 
-## 📋 Prerequisites
+## Environment variables
 
-Before setting up or deploying, verify you have the following installed locally:
-- **Java Development Kit (JDK) 21**
-- *Note: Maven is not required to be installed manually, as the Maven Wrapper (`mvnw` / `mvnw.cmd`) is preloaded in the project.*
+| Variable | Purpose | Default |
+| --- | --- | --- |
+| `SPRING_DATASOURCE_URL` | PostgreSQL/PostGIS JDBC URL | `jdbc:postgresql://localhost:5432/foodfiesta` |
+| `SPRING_DATASOURCE_USERNAME` | Database user | `postgres` |
+| `SPRING_DATASOURCE_PASSWORD` | Database password | `password` |
+| `REDIS_HOST` | Redis Geo host | `localhost` |
+| `REDIS_PORT` | Redis Geo port | `6379` |
+| `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server | `localhost:9092` |
+| `OPENAI_API_KEY` | Enables Spring AI ETA refinement | unset |
+| `OPENAI_CHAT_MODEL` | OpenAI chat model | `gpt-4o-mini` |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | unset |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | unset |
 
----
+## Run locally
 
-## ⚙️ Environment Variables Registry
+Create a `.env` file for local secrets:
 
-In production, avoid hardcoding values. Use this table to configure environment variables for deployment on Render, Docker, or your preferred cloud host:
-
-| Variable Name | Purpose | Example Value / Default |
-| :--- | :--- | :--- |
-| `JAVA_HOME` | Points to Java installation directory | `C:\Program Files\Java\jdk-21` |
-| `PORT` | Web port Spring Boot listens on | `8080` |
-| `SPRING_DATASOURCE_URL` | JDBC database connection string | `jdbc:postgresql://db:5432/foodfiesta` |
-| `SPRING_DATASOURCE_USERNAME` | Database username credentials | `postgres` |
-| `SPRING_DATASOURCE_PASSWORD` | Database password credentials | `your_password` |
-| `GOOGLE_CLIENT_ID` | Google OAuth Web App Client ID | `your_client_id.apps.googleusercontent.com` |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth Web App Client Secret | `GOCSPX-your_secret` |
-
----
-
-## 🚀 Local Quick-Start (H2 Database)
-
-### 1. Clone & Navigate
-```bash
-git clone https://github.com/imrajeevnayan/Food-Fiesta.git
-cd Food-Fiesta
-```
-
-### 2. Configure Environment `.env`
-Create a file named `.env` in the root directory (this is automatically ignored by Git) to store your local credentials:
 ```env
-GOOGLE_CLIENT_ID=your_id_here.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your_secret_here
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-### 3. Run Locally
+Start the complete platform:
 
-*   **Windows (PowerShell)**:
-    ```powershell
-    Get-Content .env | ForEach-Object { $name, $value = $_.Split('=', 2); if ($name -and $value) { [System.Environment]::SetEnvironmentVariable($name.Trim(), $value.Trim()) } }; .\mvnw.cmd spring-boot:run
-    ```
-*   **macOS / Linux**:
-    ```bash
-    export $(cat .env | xargs) && ./mvnw spring-boot:run
-    ```
-
-### 4. Port Access
-- **Frontend App**: [http://localhost:8080/](http://localhost:8080/)
-- **Swagger Docs**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
-- **H2 DB Console**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console) (JDBC URL: `jdbc:h2:mem:foodfiesta`, User: `sa`, Pass: *blank*)
-
----
-
-## 🗄️ Database Configurations (H2 vs. PostgreSQL)
-
-### Option A: Local Dev / Quick Demo (H2 In-Memory)
-By default, the application runs on H2. It auto-seeds default administrators and catalog entries on startup:
-*   **Admin Email**: `admin@foodfiesta.com`
-*   **Admin Password**: `admin123`
-
-*Note: In-memory data resets every time the application stops or sleeps.*
-
-### Option B: Production Setup (PostgreSQL)
-To run a persistent database locally or in production, configure the environment variables or update `src/main/resources/application.properties` with:
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/foodfiesta
-spring.datasource.username=postgres
-spring.datasource.password=YOUR_PASSWORD
-spring.jpa.hibernate.ddl-auto=update
+```bash
+docker compose up --build
 ```
 
----
+The service is available at `http://localhost:8080`. Flyway automatically installs the baseline PostGIS schema, including the `postgis` extension, on the first database startup.
 
-## ☁️ Deploying on Render (Cloud Deployment)
+## Delivery APIs
 
-Render parses the project's `Dockerfile` to compile and containerize the Spring Boot application.
+Set the final delivery point before requesting an ETA:
 
-### Setup Guide A: H2 Database (Quick Demo)
-1. Go to your **Render Dashboard**, click **New > Web Service**.
-2. Link your `Food-Fiesta` GitHub repository.
-3. Select **Docker** as the Runtime environment.
-4. Go to **Advanced** settings, add the following environment variables:
-   - **`PORT`**: `8080`
-   - **`GOOGLE_CLIENT_ID`**: `[Your Client ID]`
-   - **`GOOGLE_CLIENT_SECRET`**: `[Your Client Secret]`
-5. Click **Create Web Service**.
+```http
+PUT /api/orders/{orderId}/delivery-location
+Content-Type: application/json
 
-### Setup Guide B: PostgreSQL (Production Persistence)
-1. Go to Render, click **New > PostgreSQL** to create a persistent database. Copy the **Internal Database URL**.
-2. Create a new **Web Service**, link your repository, and select **Docker** as the Runtime.
-3. Under **Advanced**, add the environment variables:
-   - **`PORT`**: `8080`
-   - **`GOOGLE_CLIENT_ID`**: `[Your Client ID]`
-   - **`GOOGLE_CLIENT_SECRET`**: `[Your Client Secret]`
-   - **`SPRING_DATASOURCE_URL`**: `jdbc:postgresql://<HOST>:<PORT>/foodfiesta` *(parsed from your Internal Database URL)*
-   - **`SPRING_DATASOURCE_USERNAME`**: `postgres`
-   - **`SPRING_DATASOURCE_PASSWORD`**: `[Your DB Password]`
-4. Click **Create Web Service**.
+{
+  "lon": 77.5946,
+  "lat": 12.9716
+}
+```
 
----
+Retrieve the estimate:
 
-## 🐳 Docker Deployment (Local Containerized)
+```http
+GET /estimate-delivery/{orderId}
+```
 
-1. Build the production-ready Docker image:
-   ```bash
-   docker build -t food-fiesta .
-   ```
-2. Run the container locally:
-   ```bash
-   docker run -p 8080:8080 --env-file .env food-fiesta
-   ```
+A successful response includes the PostGIS distance, preparation time, mocked traffic delay, delivery minutes, estimated arrival timestamp, and whether the result came from `spring-ai` or the deterministic `heuristic` model. The endpoint returns `404` for an unknown order and `409` until a delivery location has been set.
 
----
+## Real-time topics and APIs
 
-## 📄 License
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+| Capability | Endpoint or topic |
+| --- | --- |
+| Driver location update | `POST /api/drivers/{driverId}/location` |
+| Driver STOMP update | `/app/drivers/{driverId}/location` |
+| Driver tracking subscription | `/topic/drivers/{driverId}` |
+| Order status subscription | `/topic/orders/{orderId}` |
+| Kafka order-routing topic | `new-order-created` |
 
-*Developed by **imrajeevnayan***
+## Deployment
+
+Use a PostGIS-enabled PostgreSQL database, Redis, and Kafka for every deployed environment. Configure the environment variables above in the deployment platform; do not use the local defaults in production. The provided `docker-compose.yml` starts the application with compatible PostGIS, Redis, and Kafka services for local development.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
