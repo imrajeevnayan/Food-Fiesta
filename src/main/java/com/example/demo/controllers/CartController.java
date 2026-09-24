@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import com.example.demo.entities.*;
+import com.example.demo.events.OrderCreatedEvent;
 import com.example.demo.services.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class CartController {
 
     @Autowired
     private OrderServices orderServices;
+
+    @Autowired
+    private OrderEventProducer orderEventProducer;
 
     @GetMapping
     public String viewCart(HttpSession session, Model model) {
@@ -134,9 +138,14 @@ public class CartController {
             double itemTotal = item.getProduct().getPprice() * item.getQuantity();
             order.setTotalAmmout(itemTotal);
             order.setUser(loggedInUser);
+            order.setRestaurant(item.getProduct().getRestaurant());
             order.setOrderDate(new Date());
 
-            orderServices.saveOrder(order);
+            Orders savedOrder = orderServices.saveOrder(order);
+            orderEventProducer.publish(new OrderCreatedEvent(
+                    savedOrder.getoId(),
+                    savedOrder.getRestaurant().getLocation().getX(),
+                    savedOrder.getRestaurant().getLocation().getY()));
             totalOrderAmount += itemTotal;
         }
 

@@ -19,9 +19,9 @@ public class OrderServices
 		List<Orders> list=this.orderRepository.findAll();
 		return list;
 	}
-	public void saveOrder(Orders order)
+	public Orders saveOrder(Orders order)
 	{
-		this.orderRepository.save(order);
+		return this.orderRepository.save(order);
 	}
 
 	public void updateOrder(int id,Orders order)

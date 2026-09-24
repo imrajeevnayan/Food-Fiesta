@@ -1,13 +1,18 @@
 package com.example.demo.entities;
+import java.time.Instant;
 import java.util.Date;
 
+import org.locationtech.jts.geom.Point;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -26,6 +31,63 @@ public class Orders
 	@ManyToOne
 	@JoinColumn(name="user_u_id")
 	private User user;
+
+	@ManyToOne
+	@JoinColumn(name = "restaurant_id")
+	private Restaurant restaurant;
+
+	@ManyToOne
+	@JoinColumn(name = "driver_id")
+	private Driver driver;
+
+	@Enumerated(EnumType.STRING)
+	private OrderStatus status = OrderStatus.PLACED;
+
+	@Column(name = "delivery_location", columnDefinition = "geometry(Point,4326)")
+	private Point deliveryLocation;
+
+	@Column(name = "estimated_eta_at")
+	private Instant estimatedEtaAt;
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public Driver getDriver() {
+		return driver;
+	}
+
+	public void setDriver(Driver driver) {
+		this.driver = driver;
+	}
+
+	public OrderStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	}
+
+	public Point getDeliveryLocation() {
+		return deliveryLocation;
+	}
+
+	public void setDeliveryLocation(Point deliveryLocation) {
+		this.deliveryLocation = deliveryLocation;
+	}
+
+	public Instant getEstimatedEtaAt() {
+		return estimatedEtaAt;
+	}
+
+	public void setEstimatedEtaAt(Instant estimatedEtaAt) {
+		this.estimatedEtaAt = estimatedEtaAt;
+	}
 
 	public Date getOrderDate() {
 		return orderDate;
