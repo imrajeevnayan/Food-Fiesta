@@ -67,6 +67,7 @@ PostGIS     Kafka       Redis Geo  Spring AI
 | `REDIS_HOST` | Redis Geo host | `localhost` |
 | `REDIS_PORT` | Redis Geo port | `6379` |
 | `KAFKA_BOOTSTRAP_SERVERS` | Kafka bootstrap server | `localhost:9092` |
+| `MAP_ROUTING_BASE_URL` | OSRM-compatible routing API base URL | `https://router.project-osrm.org` |
 | `OPENAI_API_KEY` | Enables Spring AI ETA refinement | unset |
 | `OPENAI_CHAT_MODEL` | OpenAI chat model | `gpt-4o-mini` |
 | `GOOGLE_CLIENT_ID` | Google OAuth client ID | unset |
@@ -112,10 +113,30 @@ GET /estimate-delivery/{orderId}
 
 A successful response includes the PostGIS distance, preparation time, mocked traffic delay, delivery minutes, estimated arrival timestamp, and whether the result came from `spring-ai` or the deterministic `heuristic` model. The endpoint returns `404` for an unknown order and `409` until a delivery location has been set.
 
+Travel time is taken from an external OSRM-compatible routing API when reachable; otherwise it degrades to the straight-line PostGIS distance.
+
+## Nearby-restaurant search
+
+Search active restaurants within a radius using PostGIS `ST_DWithin`, ordered by true ground distance:
+
+```http
+GET /restaurants/nearby?lat=12.9716&lon=77.5946&radius=5km
+```
+
+`radius` accepts `km` or `m` (e.g. `5km`, `800m`, or a bare number treated as km) and is capped at 50 km; it defaults to `5km`. The response lists `id`, `name`, `address`, `avgPrepMinutes`, and `distanceMeters` for each match.
+
+## Resilience
+
+- **Circuit breaker (Resilience4j):** the external map-routing client runs behind a `mapRouting` circuit breaker (sliding window 10, 50% failure threshold, 10s open wait). When the vendor is slow or down, the breaker opens and the ETA path falls back to the straight-line estimate instead of cascading failures. Configure the vendor with `MAP_ROUTING_BASE_URL`.
+- **Virtual threads:** `spring.threads.virtual.enabled=true` runs request and WebSocket handling on Java 21 virtual threads for high-fan-out concurrency.
+
 ## Real-time topics and APIs
 
 | Capability | Endpoint or topic |
 | --- | --- |
+| Nearby restaurant search | `GET /restaurants/nearby?lat=&lon=&radius=5km` |
+| Delivery location update | `PUT /api/orders/{orderId}/delivery-location` |
+| Delivery ETA | `GET /estimate-delivery/{orderId}` |
 | Driver location update | `POST /api/drivers/{driverId}/location` |
 | Driver STOMP update | `/app/drivers/{driverId}/location` |
 | Driver tracking subscription | `/topic/drivers/{driverId}` |

@@ -28,11 +28,14 @@ public class DeliveryEstimateService {
 
     private final OrderRepository orderRepository;
     private final ObjectProvider<ChatClient.Builder> chatClientBuilderProvider;
+    private final MapRoutingClient mapRoutingClient;
 
     public DeliveryEstimateService(OrderRepository orderRepository,
-            ObjectProvider<ChatClient.Builder> chatClientBuilderProvider) {
+            ObjectProvider<ChatClient.Builder> chatClientBuilderProvider,
+            MapRoutingClient mapRoutingClient) {
         this.orderRepository = orderRepository;
         this.chatClientBuilderProvider = chatClientBuilderProvider;
+        this.mapRoutingClient = mapRoutingClient;
     }
 
     @Transactional
@@ -56,7 +59,8 @@ public class DeliveryEstimateService {
 
         int preparationMinutes = order.getRestaurant().getAvgPrepMinutes();
         int trafficDelayMinutes = mockedTrafficDelayMinutes(orderId);
-        int travelMinutes = Math.max(1, (int) Math.ceil(distanceMeters / DELIVERY_SPEED_METERS_PER_MINUTE));
+        int straightLineMinutes = Math.max(1, (int) Math.ceil(distanceMeters / DELIVERY_SPEED_METERS_PER_MINUTE));
+        int travelMinutes = roadTravelMinutes(order, straightLineMinutes);
         int heuristicMinutes = preparationMinutes + travelMinutes + trafficDelayMinutes;
         Integer aiMinutes = predictWithAi(distanceMeters, preparationMinutes, trafficDelayMinutes, travelMinutes);
         int deliveryMinutes = aiMinutes == null ? heuristicMinutes : boundedPrediction(aiMinutes, heuristicMinutes);
@@ -72,6 +76,18 @@ public class DeliveryEstimateService {
     private Orders findOrder(int orderId) {
         return orderRepository.findById(orderId)
                 .orElseThrow(() -> new NoSuchElementException("Order not found: " + orderId));
+    }
+
+    /** Prefer real road routing; the circuit-breaker fallback keeps the straight-line estimate. */
+    private int roadTravelMinutes(Orders order, int fallbackMinutes) {
+        Point restaurant = order.getRestaurant().getLocation();
+        Point destination = order.getDeliveryLocation();
+        if (restaurant == null || destination == null) {
+            return fallbackMinutes;
+        }
+        return mapRoutingClient
+                .travelMinutes(restaurant.getX(), restaurant.getY(), destination.getX(), destination.getY())
+                .orElse(fallbackMinutes);
     }
 
     private int mockedTrafficDelayMinutes(int orderId) {

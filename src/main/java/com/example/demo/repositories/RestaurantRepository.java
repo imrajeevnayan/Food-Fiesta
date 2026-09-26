@@ -26,4 +26,26 @@ public interface RestaurantRepository extends CrudRepository<Restaurant, Long> {
     List<Restaurant> findNearby(@Param("lon") double lon,
                                 @Param("lat") double lat,
                                 @Param("radiusMeters") double radiusMeters);
+
+    /**
+     * Same radius search, but also projects the true ground distance in meters
+     * so callers can show "1.2 km away" without a second round-trip.
+     */
+    @Query(value = """
+            SELECT r.id AS id,
+                   r.name AS name,
+                   r.address AS address,
+                   r.avg_prep_minutes AS avgPrepMinutes,
+                   ST_Distance(r.location::geography,
+                               ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography) AS distanceMeters
+            FROM restaurant r
+            WHERE r.is_active
+              AND ST_DWithin(r.location::geography,
+                             ST_SetSRID(ST_MakePoint(:lon, :lat), 4326)::geography,
+                             :radiusMeters)
+            ORDER BY distanceMeters
+            """, nativeQuery = true)
+    List<NearbyRestaurantProjection> findNearbyWithDistance(@Param("lon") double lon,
+                                                            @Param("lat") double lat,
+                                                            @Param("radiusMeters") double radiusMeters);
 }
